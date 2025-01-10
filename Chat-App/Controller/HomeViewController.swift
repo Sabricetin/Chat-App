@@ -99,12 +99,30 @@ extension HomeViewController : UITableViewDelegate , UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 72
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "chatViewController") as! ChatViewController
+        vc.recipientName = list[indexPath.row].name!
+        vc.recipientUid = list[indexPath.row].uid!
+        self.present(vc , animated: true)
+        
+        
+    }
     
   
 }
 
 extension HomeViewController  : UITabBarDelegate {
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        
+        if item.tag == 0 {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "inboxViewController") as! InboxViewController
+            self.present(vc , animated: true)
+            
+        } else { // 1
+            let vc = storyboard?.instantiateViewController(withIdentifier: "profileViewController") as! ProfileViewController
+            self.present(vc , animated: true)
+        }
+        
          
     }
 }
