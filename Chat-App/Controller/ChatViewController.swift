@@ -99,6 +99,8 @@ class ChatViewController: UIViewController {
         
     }
     
+    
+    
     @objc func keyboardWillShow(notification : Notification) {
         
         if let userInfo = notification.userInfo {
