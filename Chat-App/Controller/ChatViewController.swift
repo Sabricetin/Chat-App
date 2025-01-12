@@ -10,6 +10,7 @@ import FirebaseAuth
 import FirebaseDatabase
 
 
+
 class ChatViewController: UIViewController {
     
     
@@ -23,10 +24,13 @@ class ChatViewController: UIViewController {
     var list = [MessageListItem]()
     var auth : Auth!
     var chatInboxInfo : NSDictionary!
+    var chatLastInfo : NSDictionary!
+    
     
     var recipientName = ""
     var recipientUid = ""
     var rowKeyChatInBox : String = ""
+    var rowKeyChatLast : String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +51,7 @@ class ChatViewController: UIViewController {
                 for child in dataSnapshot.children {
                     let snap = child as! DataSnapshot
                     let dic = snap.value as! NSDictionary
-                    if (dic["recepintUid"] as! String) ==
+                    if (dic["recipientUid"] as! String) ==
                         self.recipientUid {
                         self.chatInboxInfo = dic
                         
@@ -70,10 +74,12 @@ class ChatViewController: UIViewController {
                             .observe(.value) { dataSnapShot in
                                 for child in dataSnapshot.children {
                                     let snap = child as! DataSnapshot
-                                    self.rowKeyChatInBox = snap.key
+                                    self.rowKeyChatLast = snap.key
                                 }
                             }
                     }
+                    self.createChatInboxAndLastChat()
+                    self.chats()
                     /* son chati oluştur
                     chatler
                     son chat */
@@ -84,8 +90,75 @@ class ChatViewController: UIViewController {
         
         
     }
+    func chatsLast() {
+        databaseRef.child(Child.CHAT_LAST)
+            .queryOrdered(byChild: "inboxKey")
+            .queryEqual(toValue: (self.chatInboxInfo["inboxKey"] as!  String))
+            .observe(.childChanged) { dataSnapshot in
+                if let dict = dataSnapshot.value as? NSDictionary {
+                    let messageKey = dict["messageKey"] as? String
+                    self.databaseRef.child(Child.CHATS)
+                        //BURAYA DİKKAT ET
+                        .child(messageKey!)
+                        .observeSingleEvent(of: .value) { dataSnapshot in
+                            if let messageListItem = MessageListItem(snapshot: dataSnapshot) {
+                                self.list.append(messageListItem)
+                            }
+                            self.messageTableView.reloadData()
+                            self.tableViewScrollToBottom(animated: false)
+                           
+                        }
+                }
+            }
+    }
     
     
+    func createChatInboxAndLastChat () {
+        
+        if chatInboxInfo == nil {
+            let key = databaseRef.childByAutoId().key
+            
+            //Gönderen
+            
+            chatInboxInfo = [ "inboxKey" : key! , "sendenrUid": self.auth.currentUser!.uid , "recipientUid":self.recipientUid , "isRead" : "0"]
+            databaseRef.child(Child.CHAT_INBOX).childByAutoId().setValue(chatInboxInfo)
+            
+            //Alıcı
+            chatInboxInfo = [ "inboxKey" : key! , "sendenrUid": self.recipientUid , "recipientUid":self.auth.currentUser!.uid , "isRead" : "0"]
+            databaseRef.child(Child.CHAT_INBOX).childByAutoId().setValue(chatInboxInfo) { error, databaseReferance in
+                self.rowKeyChatInBox = databaseReferance.key!
+            }
+            
+            //Son Mesaj
+            
+            self.chatLastInfo = ["inboxKey" : key! , "messageKey" : "" ]
+            databaseRef.child(Child.CHAT_LAST).childByAutoId().setValue(chatLastInfo) { error, databaseReference in
+                self.rowKeyChatInBox = databaseReference.key!
+                
+                
+            }
+        }
+        
+        
+    }
+    
+    func chats() {
+        databaseRef.child(Child.CHATS)
+            .queryOrdered(byChild: "inboxKey")
+            .queryEqual(toValue: (self.chatInboxInfo!["inboxKey"] as! String))
+            .observeSingleEvent(of: .value) { snapshot in
+                for child in snapshot.children {
+                    if let childSnapshot = child as? DataSnapshot , let message = MessageListItem(snapshot: childSnapshot) {
+                        self.list.append(message)
+                    }
+                   
+                }
+                self.messageTableView.reloadData()
+                self.tableViewScrollToBottom(animated: true)
+                
+            }
+        
+    }
     
     func setUpTableAndInitDB () {
         databaseRef = Database.database().reference()
@@ -149,7 +222,7 @@ class ChatViewController: UIViewController {
         databaseRef.child(Child.CHATS).childByAutoId()
             .setValue(postData) { error, dbRef in
                 self.textMessageTextField.text = ""
-                self.databaseRef.child(Child.CHAT_LAST).child(self.rowKeyChatInBox).child("messageKey").setValue(dbRef.key)
+                self.databaseRef.child(Child.CHAT_LAST).child(self.rowKeyChatLast).child("messageKey").setValue(dbRef.key)
                 self.databaseRef.child(Child.CHAT_INBOX).child(self.rowKeyChatInBox)
                     .child("isRead").setValue("1")
             }
@@ -168,4 +241,35 @@ class ChatViewController: UIViewController {
     }
     */
 
+}
+extension  ChatViewController : UITableViewDelegate , UITableViewDataSource , UIScrollViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return list.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "chatTableViewCell") as! ChatTableViewCell
+        let info = self.list[indexPath.row]
+        if self.auth.currentUser!.uid == info.senderUid {
+            cell.messageType(isComing: false)
+        } else {
+            cell.messageType(isComing: true)
+            
+        }
+        cell.label.text = info.message
+        
+        
+        
+        return cell
+        
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        self.view.endEditing(true)
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    
 }

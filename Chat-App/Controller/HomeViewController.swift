@@ -48,22 +48,24 @@ class HomeViewController: UIViewController {
         databaseRef.child(Child.USERS).observe(.value) { snapshot in
             
             self.list.removeAll()
+            print("Auth.auth().currentUser?.uid \(Auth.auth().currentUser?.uid)")
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot , let user = UserListItem(snapshot : childSnapshot){
-                    print(user.name)
+                    print("user.uid \(user.uid)")
                     if user.uid != Auth.auth().currentUser?.uid {
-                        
                         self.list.append(user)
 
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.usersTableView.reloadData()
                     }
                     
                     
                 } else {
                     print("Veri Alımında Hata Var")
                 }
-                DispatchQueue.main.async {
-                    self.usersTableView.reloadData()
-                }
+                
             }
             
           

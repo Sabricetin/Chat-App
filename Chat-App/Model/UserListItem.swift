@@ -23,7 +23,7 @@ class UserListItem {
         guard let value = snapshot.value as? [String: Any] else {
             return nil
         }
-        self.uid = snapshot.key
+        self.uid = value["uid"] as? String
         self.name = value["name"] as? String ?? "biliniyor"
         self.photoUrl = value["photoURL"] as? String
     }
