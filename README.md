@@ -11,23 +11,23 @@ Bu proje, Swift ile iOS cihazlar için geliştirilen bir gerçek zamanlı sohbet
 	•	Duyarlı Arayüz: Kullanıcı deneyimini artırmak için düzgün ve duyarlı bir tasarım.
 
 Kurulum ve Kullanım 📲
-	1.	Projeyi Klonlayın:
+	.	Projeyi Klonlayın:
 
 git clone https://github.com/your-username/chat-app.git
 cd chat-app
 
 
-	2.	Bağımlılıkları Yükleyin:
-	•	Firebase için gerekli pod’ları yükleyin:
+	1.	Bağımlılıkları Yükleyin:
+	2•	Firebase için gerekli pod’ları yükleyin:
 
 pod install
 
 
-	3.	Firebase Yapılandırması:
-	•	Firebase Console üzerinden bir proje oluşturun.
-	•	GoogleService-Info.plist dosyasını indirin ve proje dosyasına ekleyin.
+	1.	Firebase Yapılandırması:
+	2•	Firebase Console üzerinden bir proje oluşturun.
+	3•	GoogleService-Info.plist dosyasını indirin ve proje dosyasına ekleyin.
 	4.	Projeyi Çalıştırın:
-	•	Xcode ile projeyi açın ve cihazınızda veya simülatörde çalıştırın.
+	5•	Xcode ile projeyi açın ve cihazınızda veya simülatörde çalıştırın.
 
 Kullanılan Teknolojiler 🛠️
 	•	Swift: iOS uygulama geliştirme.
