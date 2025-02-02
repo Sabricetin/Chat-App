@@ -14,6 +14,9 @@ import FirebaseDatabase
 class ChatViewController: UIViewController {
     
     
+    
+    
+    
 
     @IBOutlet weak var textMessageTextField: UITextField!
     @IBOutlet weak var messageTableView: UITableView!
