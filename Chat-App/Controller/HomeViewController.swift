@@ -49,6 +49,7 @@ class HomeViewController: UIViewController {
             
             self.list.removeAll()
             print("Auth.auth().currentUser?.uid \(Auth.auth().currentUser?.uid)")
+            
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot , let user = UserListItem(snapshot : childSnapshot){
                     print("user.uid \(user.uid)")
@@ -74,16 +75,6 @@ class HomeViewController: UIViewController {
         
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension HomeViewController : UITableViewDelegate , UITableViewDataSource {
@@ -101,10 +92,13 @@ extension HomeViewController : UITableViewDelegate , UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 72
     }
+   
+    
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "chatViewController") as! ChatViewController
-        vc.recipientName = list[indexPath.row].name!
-        vc.recipientUid = list[indexPath.row].uid!
+        vc.recipientName = list[indexPath.row].name
+        vc.recipientUid = list[indexPath.row].uid
         self.present(vc , animated: true)
         
         

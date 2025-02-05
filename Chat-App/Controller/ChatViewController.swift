@@ -51,9 +51,12 @@ class ChatViewController: UIViewController {
             .queryOrdered(byChild: "senderUid")
             .queryEqual(toValue: self.auth.currentUser?.uid)
             .observeSingleEvent(of: .value) { dataSnapshot in
+                var foundChat = false
+
                 for child in dataSnapshot.children {
                     let snap = child as! DataSnapshot
                     let dic = snap.value as! NSDictionary
+                   
                     if (dic["recipientUid"] as! String) ==
                         self.recipientUid {
                         self.chatInboxInfo = dic
@@ -75,15 +78,26 @@ class ChatViewController: UIViewController {
                             .queryOrdered(byChild: "inboxKey")
                             .queryEqual(toValue: (dic["inboxKey"] as! String))
                             .observe(.value) { dataSnapShot in
+                                
                                 for child in dataSnapshot.children {
                                     let snap = child as! DataSnapshot
                                     self.rowKeyChatLast = snap.key
                                 }
                             }
                     }
+                    
+                    if !foundChat {
+                                    print("⚠️ chatInboxInfo bulunamadı, şimdi oluşturuluyor...")
+                                    self.createChatInboxAndLastChat()
+                                } else {
+                                    print("✅ Zaten bir chat inbox var, eskiyi kullanıyorum.")
+                                }
+
+                                self.chats()
+                    /*
                     self.createChatInboxAndLastChat()
                     self.chats()
-                    /* son chati oluştur
+                    son chati oluştur
                     chatler
                     son chat */
                     
@@ -123,11 +137,11 @@ class ChatViewController: UIViewController {
             
             //Gönderen
             
-            chatInboxInfo = [ "inboxKey" : key! , "sendenrUid": self.auth.currentUser!.uid , "recipientUid":self.recipientUid , "isRead" : "0"]
+            chatInboxInfo = [ "inboxKey" : key! , "senderUid": self.auth.currentUser!.uid , "recipientUid":self.recipientUid , "isRead" : "0"]
             databaseRef.child(Child.CHAT_INBOX).childByAutoId().setValue(chatInboxInfo)
             
             //Alıcı
-            chatInboxInfo = [ "inboxKey" : key! , "sendenrUid": self.recipientUid , "recipientUid":self.auth.currentUser!.uid , "isRead" : "0"]
+            chatInboxInfo = [ "inboxKey" : key! , "senderUid": self.recipientUid , "recipientUid":self.auth.currentUser!.uid , "isRead" : "0"]
             databaseRef.child(Child.CHAT_INBOX).childByAutoId().setValue(chatInboxInfo) { error, databaseReferance in
                 self.rowKeyChatInBox = databaseReferance.key!
             }
@@ -144,6 +158,8 @@ class ChatViewController: UIViewController {
         
         
     }
+    
+    
     
     func chats() {
         databaseRef.child(Child.CHATS)
@@ -214,9 +230,15 @@ class ChatViewController: UIViewController {
     }
     @IBAction func btnSendMessage(_ sender: Any) {
         
-        let inboxKey = chatInboxInfo["inboxKey"] as! String
+        //let inboxKey = chatInboxInfo["inboxKey"] as! String
+        guard let chatInboxInfo = chatInboxInfo, let inboxKey = chatInboxInfo["inboxKey"] as? String else {
+            print("HATA: chatInboxInfo veya inboxKey nil!")
+            return
+        }
+        
         let senderUid = auth.currentUser?.uid
         let message = textMessageTextField.text!
+        print("çalıştır1")
         let postData = [
             "inboxKey" : inboxKey ,
             "senderUid" : senderUid ,
@@ -224,10 +246,12 @@ class ChatViewController: UIViewController {
         ]
         databaseRef.child(Child.CHATS).childByAutoId()
             .setValue(postData) { error, dbRef in
+                print("çalıştır2")
                 self.textMessageTextField.text = ""
                 self.databaseRef.child(Child.CHAT_LAST).child(self.rowKeyChatLast).child("messageKey").setValue(dbRef.key)
                 self.databaseRef.child(Child.CHAT_INBOX).child(self.rowKeyChatInBox)
                     .child("isRead").setValue("1")
+                print("çalıştır3")
             }
         
         
@@ -260,8 +284,6 @@ extension  ChatViewController : UITableViewDelegate , UITableViewDataSource , UI
             
         }
         cell.label.text = info.message
-        
-        
         
         return cell
         

@@ -28,7 +28,7 @@ class HomeTableViewCell: UITableViewCell {
     func configure(userItem : UserListItem) {
         
         self.imageView?.layer.cornerRadius = (imageView?.layer.frame.width)! / 2
-        Helper.imageLoad(imageView: userImage, url: userItem.photoUrl!)
+        Helper.imageLoad(imageView: userImage, url: userItem.photoURL)
         userNameLabel.text = userItem.name
         
         
