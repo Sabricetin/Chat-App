@@ -24,7 +24,7 @@ class MessageListItem {
             return nil
         }
 
-        self.senderUid = (snap ["name"] as! String)
+        self.senderUid = (snap ["senderUid"] as! String)
         self.message = (snap["message"] as! String)
     }
     

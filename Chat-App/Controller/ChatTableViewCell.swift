@@ -23,14 +23,6 @@ class ChatTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
-       
-        
-        // Configure the view for the selected state
-    }
-    
-    override init(style : UITableViewCell.CellStyle , reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         addSubview(viewRow)
         viewRow.layer.cornerRadius = 16
         viewRow.layer.masksToBounds = true
@@ -57,6 +49,14 @@ class ChatTableViewCell: UITableViewCell {
         leadingConstraint.isActive = true
         trailingConstraint = label.leadingAnchor.constraint(equalTo: leadingAnchor , constant: -32)
         trailingConstraint.isActive = false
+       
+        
+        // Configure the view for the selected state
+    }
+    
+    override init(style : UITableViewCell.CellStyle , reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
     }
     
     func messageType (isComing : Bool) {
