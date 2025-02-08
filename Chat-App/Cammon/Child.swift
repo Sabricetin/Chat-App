@@ -10,7 +10,7 @@ import Foundation
 
 class Child {
     static let USERS: String = "users"
-    static let CHAT_INBOX: String = "ChatInbox"
+    static let CHAT_INBOX: String = "chatInbox"
     static let CHAT_LAST: String = "chatLast"
     static let CHATS: String = "chats"
     

@@ -10,8 +10,9 @@ import FirebaseDatabase
 
 class MessageListItem {
     
-    var senderUid : String
-    var message : String
+    var senderUid : String?
+    var message : String?
+    var isRead: String?
   
     init(senderUid: String, message: String) {
         self.senderUid = senderUid
@@ -26,6 +27,7 @@ class MessageListItem {
 
         self.senderUid = (snap ["senderUid"] as! String)
         self.message = (snap["message"] as! String)
+        self.isRead = (snap["isRead"] as! String)
     }
     
 }

@@ -12,11 +12,11 @@ import FirebaseStorage
 
 class ProfileViewController: UIViewController {
 
-    /*
+    
+   
     @IBOutlet weak var photoImageView: UIImageView!
     
     @IBOutlet weak var infoLabel: UILabel!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +33,7 @@ class ProfileViewController: UIViewController {
             .queryOrdered(byChild: "uid")
             .queryEqual(toValue: auth.currentUser!.uid)
             .observeSingleEvent(of: .value) { dataSnapshot in
-                for child in dataSnapshot.children{
+                for child in dataSnapshot.children {
                     let snap = child as! DataSnapshot
                     let userInfo = UserInfo(snapshot: snap)
                     
@@ -56,5 +56,5 @@ class ProfileViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
-*/
+
 }
