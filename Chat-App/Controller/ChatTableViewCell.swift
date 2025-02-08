@@ -23,6 +23,14 @@ class ChatTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
+        
+        
+        // Configure the view for the selected state
+    }
+    
+    override init(style : UITableViewCell.CellStyle , reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         addSubview(viewRow)
         viewRow.layer.cornerRadius = 16
         viewRow.layer.masksToBounds = true
@@ -37,25 +45,21 @@ class ChatTableViewCell: UITableViewCell {
             label.topAnchor.constraint(equalTo: topAnchor, constant: CGFloat(32)),
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: CGFloat(-32)),
             label.widthAnchor.constraint(lessThanOrEqualToConstant: CGFloat(256)),
-            label.topAnchor.constraint(equalTo: label.topAnchor, constant: CGFloat(16)),
-            label.leadingAnchor.constraint(equalTo: label.leadingAnchor , constant: CGFloat(-16)),
-            label.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: CGFloat(16)),
-            label.trailingAnchor.constraint(equalTo: label.trailingAnchor , constant: CGFloat(16))
+            
+            viewRow.topAnchor.constraint(equalTo: label.topAnchor, constant: CGFloat(-16)),
+            viewRow.leadingAnchor.constraint(equalTo: label.leadingAnchor , constant: CGFloat(-16)),
+            viewRow.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: CGFloat(16)),
+            viewRow.trailingAnchor.constraint(equalTo: label.trailingAnchor , constant: CGFloat(16))
             
         ]
         
         NSLayoutConstraint.activate(constraints)
         leadingConstraint = label.leadingAnchor.constraint(equalTo: leadingAnchor , constant: 32)
         leadingConstraint.isActive = true
-        trailingConstraint = label.leadingAnchor.constraint(equalTo: leadingAnchor , constant: -32)
+        
+        trailingConstraint = label.trailingAnchor.constraint(equalTo: trailingAnchor , constant: -32)
         trailingConstraint.isActive = false
        
-        
-        // Configure the view for the selected state
-    }
-    
-    override init(style : UITableViewCell.CellStyle , reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
     }
     

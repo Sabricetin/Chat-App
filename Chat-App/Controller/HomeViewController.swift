@@ -45,15 +45,16 @@ class HomeViewController: UIViewController {
         usersTableView.dataSource = self
         
         let databaseRef = Database.database().reference()
-        databaseRef.child(Child.USERS).observe(.value) { snapshot in
+        databaseRef.child(Child.USERS).observe(.value) { shapshot in
             
             self.list.removeAll()
             print("Auth.auth().currentUser?.uid \(Auth.auth().currentUser?.uid)")
             
-            for child in snapshot.children {
+            for child in shapshot.children {
                 if let childSnapshot = child as? DataSnapshot , let user = UserListItem(snapshot : childSnapshot){
                     print("user.uid \(user.uid)")
                     if user.uid != Auth.auth().currentUser?.uid {
+                        
                         self.list.append(user)
 
                     }
@@ -86,6 +87,7 @@ extension HomeViewController : UITableViewDelegate , UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "homeIdentifier", for: indexPath) as! HomeTableViewCell
         cell.configure(userItem: list [indexPath.row])
+        
         return cell
     }
     
@@ -96,13 +98,22 @@ extension HomeViewController : UITableViewDelegate , UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "chatViewController") as! ChatViewController
-        vc.recipientName = list[indexPath.row].name
-        vc.recipientUid = list[indexPath.row].uid
-        self.present(vc , animated: true)
-        
-        
-    }
+       
+        if let vc = self.storyboard?.instantiateViewController(withIdentifier: "chatViewController") as? ChatViewController {
+            vc.recipientName = list[indexPath.row].name ?? "Unknown"
+            vc.recipientUid = list[indexPath.row].uid ?? "Unknown"
+            self.present(vc, animated: true)
+        } else {
+            print("Error: chatViewController not found in storyboard")
+        }
+//
+//        let vc = self.storyboard?.instantiateViewController(withIdentifier: "chatViewController") as! ChatViewController
+//        vc.recipientName = list[indexPath.row].name!
+//        vc.recipientUid = list[indexPath.row].uid!
+//        self.present(vc , animated: true)
+//        
+//        
+   }
     
   
 }
