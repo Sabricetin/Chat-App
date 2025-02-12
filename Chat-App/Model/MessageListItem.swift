@@ -24,10 +24,11 @@ class MessageListItem {
         guard let snap = snapshot.value as? NSDictionary else {
             return nil
         }
+        
+            self.senderUid = snap["senderUid"] as? String ?? ""
+            self.message = snap["message"] as? String ?? ""
+            self.isRead = snap["isRead"] as? String ?? "false"
 
-        self.senderUid = (snap ["senderUid"] as! String)
-        self.message = (snap["message"] as! String)
-        self.isRead = (snap["isRead"] as! String)
     }
     
 }
